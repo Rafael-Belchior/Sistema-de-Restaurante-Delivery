@@ -113,7 +113,7 @@ Retornos:
 - Enviar alerta: ALERTA_STOCK_BAIXO
 
 # 🖥️ Aplicação Cliente
-- 1. 🔑 Login
+1. 🔑 Login
 
 - Enviar utilizador/senha
 
@@ -121,73 +121,75 @@ Retornos:
 
 - Possibilidade de registo caso não exista conta
 
-- 2. 🍜 Gestão de Cardápio (Administrador)
-- ## Ações disponíveis:
+2. 🍜 Gestão de Cardápio (Administrador)
+## Ações disponíveis:
 
-- Adicionar prato
+- - Adicionar prato
 
-- Envia: ADD_PRATO
+- - Envia: ADD_PRATO
 
-Recebe:
+- Recebe:
 
-- PRODUTO_ADICIONADO
+- - PRODUTO_ADICIONADO
 
-- ERRO_DUPLICADO
+- - ERRO_DUPLICADO
 
-- Atualizar prato
+- - Atualizar prato
 
-Envia: 
+- Envia: 
 
-- UPDATE_PRATO
+- - UPDATE_PRATO
 
-Recebe:
+- Recebe:
 
-- ATUALIZACAO_OK
+- - ATUALIZACAO_OK
 
-- PRODUTO_NAO_ENCONTRADO
+- - PRODUTO_NAO_ENCONTRADO
 
-- Remover prato
+- - Remover prato
 
-Envia: 
+- Envia: 
 
-- REMOVE_PRATO
+- - REMOVE_PRATO
 
-Recebe:
+- Recebe:
 
-- PRODUTO_REMOVIDO
+- - PRODUTO_REMOVIDO
 
-- Todos os utilizadores
+- - Todos os utilizadores
 
-- Listar pratos
+- - Listar pratos
 
-Envia: - LIST_PRATOS
+- Envia: 
 
-- 3. 🧾 Gestão de Pedidos
+- - LIST_PRATOS
 
-- Selecionar prato + quantidade
+ 3. 🧾 Gestão de Pedidos
 
-Enviar pedido: 
+- - Selecionar prato + quantidade
 
-- REGISTRAR_PEDIDO
+- Enviar pedido: 
 
-Receber retorno:
+- - REGISTRAR_PEDIDO
 
-- VENDA_CONFIRMADA
+- Receber retorno:
 
-- STOCK_INSUFICIENTE
+- - VENDA_CONFIRMADA
 
-- Histórico de pedidos (todos)
+- - STOCK_INSUFICIENTE
 
-Envia: - HISTORICO_PEDIDOS
+- - Histórico de pedidos (todos)
 
-- 4. 📉 Gestão de Stock (Administrador)
+- Envia: - HISTORICO_PEDIDOS
 
-- Consultar stock: CONSULTAR_STOCK
+4. 📉 Gestão de Stock (Administrador)
 
-Receber alertas do servidor: 
+- - Consultar stock: CONSULTAR_STOCK
 
-- ALERTA_STOCK_BAIXO
+- Receber alertas do servidor: 
 
-Atualizar stock: 
+- - ALERTA_STOCK_BAIXO
 
-- ATUALIZAR_STOCK
+- Atualizar stock: 
+
+- - ATUALIZAR_STOCK

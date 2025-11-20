@@ -1,0 +1,24 @@
+db: restaurante
+
+tabelas:
+    contas:
+        id: PRI INT
+        username: UNIQUE varchar(30)
+        password: varchar(10)
+        cargo_id: INT
+    
+    cargos:
+        id: PRI INT
+        nome: UNIQUE varchar(100)
+    
+    cardapio:
+        id: PRI INT
+        comida_id: INT
+
+    stock:
+        id: PRI INT
+        nome: varchar(100)
+        valor: REAL
+        stock: INT
+
+    

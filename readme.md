@@ -50,7 +50,8 @@ Todas as informações (utilizadores, funcionários, produtos, etc.) devem ser c
 - Controlar permissões (ex: só admin adiciona produtos).
 
 2. 🍽️ Gestão de Cardápio
-Administrador
+
+##### Administrador
 
 - Adicionar pratos
 
@@ -62,47 +63,49 @@ Administrador
 
 - Descrição
 
-Retornos:
+- Retornos:
 
-- ATUALIZACAO_OK
+    - ATUALIZACAO_OK
 
-- PRODUTO_NAO_ENCONTRADO
+    - PRODUTO_NAO_ENCONTRADO
 
-- Remover pratos
+    - Remover pratos
 
-- Retorno: PRODUTO_REMOVIDO
+- Retorno: 
 
-- Todos os utilizadores
+    - PRODUTO_REMOVIDO
 
-- Listar produtos
+    - Todos os utilizadores
 
-- Lista completa
+    - Listar produtos
 
-- Filtro por categoria, preço ou disponibilidade
+    - Lista completa
+
+    - Filtro por categoria, preço ou disponibilidade
 
 3. 🛒 Gestão de Pedidos
 
 - Registar pedido:
 
- - Recebe ID do produto + quantidade
+    - Recebe ID do produto + quantidade
 
- - Verifica stock
+    - Verifica stock
 
- - Atualiza base de dados
+    - Atualiza base de dados
 
 - Retornos:
 
- - VENDA_CONFIRMADA
+    - VENDA_CONFIRMADA
 
- - STOCK_INSUFICIENTE
+    - STOCK_INSUFICIENTE
 
- - Atualizar estado do pedido:
+    - Atualizar estado do pedido:
 
- - Em preparação → Pronto para entrega → Entregue
+    - Em preparação → Pronto para entrega → Entregue
 
- - Consultar histórico de vendas
+    - Consultar histórico de vendas
 
- - Lista com datas e valores totais
+    - Lista com datas e valores totais
 
 4. 📦 Gestão de Stock
 
@@ -112,9 +115,10 @@ Retornos:
 
 - Enviar alerta: 
 
- - ALERTA_STOCK_BAIXO
+    - ALERTA_STOCK_BAIXO
 
 # 🖥️ Aplicação Cliente
+
 1. 🔑 Login
 
 - Enviar utilizador/senha
@@ -130,43 +134,44 @@ Retornos:
 - Adicionar prato
 
 - Envia: 
- - ADD_PRATO
+
+    - ADD_PRATO
 
 - Recebe:
 
- - PRODUTO_ADICIONADO
+    - PRODUTO_ADICIONADO
 
- - ERRO_DUPLICADO
+    - ERRO_DUPLICADO
 
- - Atualizar prato
+    - Atualizar prato
 
 - Envia: 
 
- - UPDATE_PRATO
+    - UPDATE_PRATO
 
 - Recebe:
 
- - ATUALIZACAO_OK
+    - ATUALIZACAO_OK
 
- - PRODUTO_NAO_ENCONTRADO
+    - PRODUTO_NAO_ENCONTRADO
 
- - Remover prato
+    - Remover prato
 
 - Envia: 
 
- - REMOVE_PRATO
+    - REMOVE_PRATO
 
 - Recebe:
 
- - PRODUTO_REMOVIDO
+    - PRODUTO_REMOVIDO
 
- - Todos os utilizadores
+    - Todos os utilizadores
 
- - Listar pratos
+    - Listar pratos
 
 - Envia: 
 
- - LIST_PRATOS
+    - LIST_PRATOS
 
 3. 🧾 Gestão de Pedidos
 
@@ -174,19 +179,19 @@ Retornos:
 
 - Enviar pedido: 
 
- - REGISTRAR_PEDIDO
+    - REGISTRAR_PEDIDO
 
 - Receber retorno:
 
- - VENDA_CONFIRMADA
+    - VENDA_CONFIRMADA
 
- - STOCK_INSUFICIENTE
+    - STOCK_INSUFICIENTE
 
- - Histórico de pedidos (todos)
+    - Histórico de pedidos (todos)
 
 - Envia: 
 
- - HISTORICO_PEDIDOS
+    - HISTORICO_PEDIDOS
 
 4. 📉 Gestão de Stock (Administrador)
 
@@ -194,8 +199,8 @@ Retornos:
 
 - Receber alertas do servidor: 
 
- - ALERTA_STOCK_BAIXO
+    - ALERTA_STOCK_BAIXO
 
 - Atualizar stock: 
 
- - ATUALIZAR_STOCK
+    - ATUALIZAR_STOCK

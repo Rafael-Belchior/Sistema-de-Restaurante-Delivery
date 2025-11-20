@@ -21,4 +21,8 @@ tabelas:
         valor: REAL
         stock: INT
 
-    
+    recibos:
+        id: INT
+        conta_id: INT
+        comida_id: INT
+        quantidade: INT

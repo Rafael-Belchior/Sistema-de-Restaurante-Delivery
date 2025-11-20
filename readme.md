@@ -84,33 +84,35 @@ Retornos:
 
 - Registar pedido:
 
-- Recebe ID do produto + quantidade
+ - Recebe ID do produto + quantidade
 
-- Verifica stock
+ - Verifica stock
 
-- Atualiza base de dados
+ - Atualiza base de dados
 
-Retornos:
+- Retornos:
 
-- VENDA_CONFIRMADA
+ - VENDA_CONFIRMADA
 
-- STOCK_INSUFICIENTE
+ - STOCK_INSUFICIENTE
 
-- Atualizar estado do pedido:
+ - Atualizar estado do pedido:
 
-- Em preparação → Pronto para entrega → Entregue
+ - Em preparação → Pronto para entrega → Entregue
 
-- Consultar histórico de vendas
+ - Consultar histórico de vendas
 
-- Lista com datas e valores totais
+ - Lista com datas e valores totais
 
-- 4. 📦 Gestão de Stock
+4. 📦 Gestão de Stock
 
 - Atualizar ingredientes usados
 
 - Monitorizar stock (alerta abaixo de 5 unidades)
 
-- Enviar alerta: ALERTA_STOCK_BAIXO
+- Enviar alerta: 
+
+ - ALERTA_STOCK_BAIXO
 
 # 🖥️ Aplicação Cliente
 1. 🔑 Login
@@ -122,65 +124,69 @@ Retornos:
 - Possibilidade de registo caso não exista conta
 
 2. 🍜 Gestão de Cardápio (Administrador)
+
 ### Ações disponíveis:
 
 - Adicionar prato
 
-- Envia: ADD_PRATO
+- Envia: 
+ - ADD_PRATO
 
 - Recebe:
 
-- PRODUTO_ADICIONADO
+ - PRODUTO_ADICIONADO
 
-- ERRO_DUPLICADO
+ - ERRO_DUPLICADO
 
-- Atualizar prato
+ - Atualizar prato
 
 - Envia: 
 
-- UPDATE_PRATO
+ - UPDATE_PRATO
 
 - Recebe:
 
-- ATUALIZACAO_OK
+ - ATUALIZACAO_OK
 
-- PRODUTO_NAO_ENCONTRADO
+ - PRODUTO_NAO_ENCONTRADO
 
-- Remover prato
+ - Remover prato
 
 - Envia: 
 
-- REMOVE_PRATO
+ - REMOVE_PRATO
 
 - Recebe:
 
-- PRODUTO_REMOVIDO
+ - PRODUTO_REMOVIDO
 
-- Todos os utilizadores
+ - Todos os utilizadores
 
-- Listar pratos
+ - Listar pratos
 
 - Envia: 
 
-- LIST_PRATOS
+ - LIST_PRATOS
 
- 3. 🧾 Gestão de Pedidos
+3. 🧾 Gestão de Pedidos
 
 - Selecionar prato + quantidade
 
 - Enviar pedido: 
 
-- REGISTRAR_PEDIDO
+ - REGISTRAR_PEDIDO
 
 - Receber retorno:
 
-- VENDA_CONFIRMADA
+ - VENDA_CONFIRMADA
 
-- STOCK_INSUFICIENTE
+ - STOCK_INSUFICIENTE
 
-- Histórico de pedidos (todos)
+ - Histórico de pedidos (todos)
 
-- Envia: - HISTORICO_PEDIDOS
+- Envia: 
+
+ - HISTORICO_PEDIDOS
 
 4. 📉 Gestão de Stock (Administrador)
 
@@ -188,8 +194,8 @@ Retornos:
 
 - Receber alertas do servidor: 
 
-- ALERTA_STOCK_BAIXO
+ - ALERTA_STOCK_BAIXO
 
 - Atualizar stock: 
 
-- ATUALIZAR_STOCK
+ - ATUALIZAR_STOCK

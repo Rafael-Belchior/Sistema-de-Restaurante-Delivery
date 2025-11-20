@@ -11,6 +11,9 @@ def connect_to_db():
             database='restaurante'
         )
     except:
+        print("Database doesn't exist. Creating database...")
         DB_Creator.create_database()
         return connect_to_db()
     return conn
+
+connect_to_db()

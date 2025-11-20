@@ -8,4 +8,5 @@ def create_database():
     )
     cursor = conn.cursor()
     cursor.execute("CREATE DATABASE IF NOT EXISTS restaurante")
+    print("Database created successfully")
     conn.close()

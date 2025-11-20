@@ -1,4 +1,4 @@
-📝 Objetivo do Trabalho
+# 📝 Objetivo do Trabalho
 
 Desenvolver um Sistema de Restaurante Delivery utilizando Python, composto por:
 
@@ -20,8 +20,8 @@ Módulos
 
 Todas as informações (utilizadores, funcionários, produtos, etc.) devem ser criadas durante a execução da aplicação.
 
-👥 Papéis de Utilizador
-Administrador
+# 👥 Papéis de Utilizador
+## Administrador
 
 Gestão global do sistema
 
@@ -29,15 +29,15 @@ Controlo de stock
 
 Gestão do cardápio
 
-Entregador
+## Entregador
 
 Responsável pela entrega dos pedidos
 
-Cliente
+## Cliente
 
 Encomenda refeições
 
-🖥️ Aplicação Servidor
+# 🖥️ Aplicação Servidor
 
 Núcleo responsável por armazenar, validar e processar todas as operações comerciais.
 
@@ -112,7 +112,7 @@ Monitorizar stock (alerta abaixo de 5 unidades)
 
 Enviar alerta: ALERTA_STOCK_BAIXO
 
-🖥️ Aplicação Cliente
+# 🖥️ Aplicação Cliente
 1. 🔑 Login
 
 Enviar utilizador/senha

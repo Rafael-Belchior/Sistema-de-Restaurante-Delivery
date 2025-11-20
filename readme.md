@@ -41,7 +41,7 @@ Todas as informações (utilizadores, funcionários, produtos, etc.) devem ser c
 
 - Núcleo responsável por armazenar, validar e processar todas as operações comerciais.
 
-- 1. 🔐 Autenticação
+1. 🔐 Autenticação
 
 - Receber credenciais (utilizador/senha).
 
@@ -49,7 +49,7 @@ Todas as informações (utilizadores, funcionários, produtos, etc.) devem ser c
 
 - Controlar permissões (ex: só admin adiciona produtos).
 
-- 2. 🍽️ Gestão de Cardápio
+2. 🍽️ Gestão de Cardápio
 Administrador
 
 - Adicionar pratos
@@ -80,7 +80,7 @@ Retornos:
 
 - Filtro por categoria, preço ou disponibilidade
 
-- 3. 🛒 Gestão de Pedidos
+3. 🛒 Gestão de Pedidos
 
 - Registar pedido:
 
@@ -122,74 +122,74 @@ Retornos:
 - Possibilidade de registo caso não exista conta
 
 2. 🍜 Gestão de Cardápio (Administrador)
-## Ações disponíveis:
+### Ações disponíveis:
 
-- - Adicionar prato
+- Adicionar prato
 
-- - Envia: ADD_PRATO
-
-- Recebe:
-
-- - PRODUTO_ADICIONADO
-
-- - ERRO_DUPLICADO
-
-- - Atualizar prato
-
-- Envia: 
-
-- - UPDATE_PRATO
+- Envia: ADD_PRATO
 
 - Recebe:
 
-- - ATUALIZACAO_OK
+- PRODUTO_ADICIONADO
 
-- - PRODUTO_NAO_ENCONTRADO
+- ERRO_DUPLICADO
 
-- - Remover prato
+- Atualizar prato
 
 - Envia: 
 
-- - REMOVE_PRATO
+- UPDATE_PRATO
 
 - Recebe:
 
-- - PRODUTO_REMOVIDO
+- ATUALIZACAO_OK
 
-- - Todos os utilizadores
+- PRODUTO_NAO_ENCONTRADO
 
-- - Listar pratos
+- Remover prato
 
 - Envia: 
 
-- - LIST_PRATOS
+- REMOVE_PRATO
+
+- Recebe:
+
+- PRODUTO_REMOVIDO
+
+- Todos os utilizadores
+
+- Listar pratos
+
+- Envia: 
+
+- LIST_PRATOS
 
  3. 🧾 Gestão de Pedidos
 
-- - Selecionar prato + quantidade
+- Selecionar prato + quantidade
 
 - Enviar pedido: 
 
-- - REGISTRAR_PEDIDO
+- REGISTRAR_PEDIDO
 
 - Receber retorno:
 
-- - VENDA_CONFIRMADA
+- VENDA_CONFIRMADA
 
-- - STOCK_INSUFICIENTE
+- STOCK_INSUFICIENTE
 
-- - Histórico de pedidos (todos)
+- Histórico de pedidos (todos)
 
 - Envia: - HISTORICO_PEDIDOS
 
 4. 📉 Gestão de Stock (Administrador)
 
-- - Consultar stock: CONSULTAR_STOCK
+- Consultar stock: CONSULTAR_STOCK
 
 - Receber alertas do servidor: 
 
-- - ALERTA_STOCK_BAIXO
+- ALERTA_STOCK_BAIXO
 
 - Atualizar stock: 
 
-- - ATUALIZAR_STOCK
+- ATUALIZAR_STOCK

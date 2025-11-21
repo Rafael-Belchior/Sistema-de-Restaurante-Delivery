@@ -1,7 +1,7 @@
-from mysql.connector.pooling import PooledMySQLConnection, MySQLConnectionAbstract
+from mysql.connector.pooling import PooledMySQLConnection
 
 
-def create_tables(conn: PooledMySQLConnection | MySQLConnectionAbstract):
+def create_tables(conn: PooledMySQLConnection):
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS contas (id INT PRIMARY KEY AUTO_INCREMENT, username VARCHAR(30) UNIQUE, password VARCHAR(10), cargo_id INT)")
     cursor.execute("CREATE TABLE IF NOT EXISTS cargos (id INT PRIMARY KEY AUTO_INCREMENT, nome VARCHAR(100) UNIQUE)")

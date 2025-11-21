@@ -1,8 +1,8 @@
-from mysql.connector.pooling import PooledMySQLConnection, MySQLConnectionAbstract
+from mysql.connector.pooling import PooledMySQLConnection
 
-__conn: PooledMySQLConnection | MySQLConnectionAbstract = None
+__conn: PooledMySQLConnection = None
 
-def connect_checker(conn: PooledMySQLConnection | MySQLConnectionAbstract):
+def connect_checker(conn: PooledMySQLConnection):
     __conn = conn
 
 def check_username(username: str):
@@ -19,3 +19,7 @@ def check_permission(username: str):
     cursor.close()
     return result
 
+def check_stock(stock_id: int):
+    cursor = __conn.cursor()
+    cursor.execute("SELECT stock FROM stock WHERE id = %s", (stock_id,))
+    result: int = cursor.fetchone()

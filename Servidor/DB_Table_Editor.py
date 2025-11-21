@@ -1,6 +1,6 @@
-from mysql.connector.pooling import PooledMySQLConnection, MySQLConnectionAbstract
+from mysql.connector.pooling import PooledMySQLConnection
 
-__conn = None
+__conn: PooledMySQLConnection = None
 
-def connect_editor(conn: PooledMySQLConnection | MySQLConnectionAbstract):
+def connect_editor(conn: PooledMySQLConnection):
     __conn = conn

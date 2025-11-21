@@ -13,7 +13,7 @@ tabelas:
     
     cardapio:
         id: PRI INT
-        comida_id: INT
+        stock_id: INT
         valor: REAL
 
     stock:

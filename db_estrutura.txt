@@ -14,11 +14,11 @@ tabelas:
     cardapio:
         id: PRI INT
         comida_id: INT
+        valor: REAL
 
     stock:
         id: PRI INT
         nome: varchar(100)
-        valor: REAL
         stock: INT
 
     recibo:

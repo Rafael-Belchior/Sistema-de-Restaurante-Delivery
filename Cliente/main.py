@@ -25,7 +25,7 @@ def recolher_credenciais() -> tuple[str, str]:
 def fluxo_login() -> None:
     # Executa o fluxo de login e apresenta o resultado ao utilizador
     username, password = recolher_credenciais()
-    resposta = enviar_pedido({"acao": "login", "username": username, "password": password})
+    resposta = enviar_pedido({"action": "login", "username": username, "password": password})
     print(resposta.get("mensagem", "Sem resposta."))
     if resposta.get("status") == "ok":
         dados = resposta.get("dados", {})
@@ -36,7 +36,7 @@ def fluxo_login() -> None:
 def fluxo_registo() -> None:
     # Pede os dados de registo e tenta criar uma nova conta remotamente
     username, password = recolher_credenciais()
-    resposta = enviar_pedido({"acao": "registo", "username": username, "password": password})
+    resposta = enviar_pedido({"action": "registo", "username": username, "password": password})
     print(resposta.get("mensagem", "Sem resposta."))
 
 

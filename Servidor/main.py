@@ -12,7 +12,7 @@ def _build_response(status: str, message: str, data: Optional[dict] = None) -> b
     # Constrói a resposta padronizada para o cliente com mensagens em português
     envelope = {"status": status, "mensagem": message}
     if data:
-        envelope["dados"] = data
+        envelope["data"] = data
     return json.dumps(envelope).encode(ENCODING)
 
 
@@ -38,6 +38,7 @@ def _handle_register(payload: dict) -> bytes:
 def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
     # Recebe uma conexão individual, interpreta o pedido e envia uma resposta
     with connection:
+        payload: dict = None
         try:
             raw_payload = connection.recv(4096)
             if not raw_payload:
@@ -48,6 +49,9 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
             return
 
         acao = payload.get("action")
+
+        print(acao)
+
         if acao == "login":
             resposta = _handle_login(payload)
         elif acao == "registo":

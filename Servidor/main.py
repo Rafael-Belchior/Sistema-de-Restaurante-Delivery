@@ -47,7 +47,7 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
             connection.sendall(_build_response("erro", "Formato de mensagem inválido."))
             return
 
-        acao = payload.get("acao")
+        acao = payload.get("action")
         if acao == "login":
             resposta = _handle_login(payload)
         elif acao == "registo":

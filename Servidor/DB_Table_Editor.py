@@ -30,3 +30,23 @@ def remove_food(comida: int | str):
     
     cursor.execute("DELETE FROM stock WHERE id = %s", (comida,))
     cursor.close()
+
+def insert_account(username: str, password: str):
+    cursor = __conn.cursor()
+    cursor.execute("INSERT INTO contas (username, password, cargo_id) VALUES (%s, %s, %s)", (username, password, 0))
+
+def edit_account_role(account: int | str, new_role: int):
+    cursor = __conn.cursor()
+    if (type(account) == str):
+        cursor.execute("SELECT id FROM contas WHERE username = %s", (account,))
+        account: int = cursor.fetchone()
+    cursor.execute("UPDATE contas SET cargo_id = %s WHERE id = %s", (new_role))
+    cursor.close()
+
+def del_account(account: int | str):
+    cursor = __conn.cursor()
+    if (type(account) == str):
+        cursor.execute("SELECT id FROM contas WHERE username = %s", (account,))
+        account: int = cursor.fetchone()
+    cursor.execute("DELETE FROM contas WHERE id = %s", (account,))
+    cursor.close()

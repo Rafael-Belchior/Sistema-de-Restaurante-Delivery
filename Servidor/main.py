@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import json
 import socket
 import threading
@@ -76,6 +75,3 @@ def start_server(host: str = "127.0.0.1", port: int = 5000) -> None:
 if __name__ == "__main__":
     # Arranque directo quando o ficheiro é executado manualmente
     start_server()
-=======
-import DB_Handler
->>>>>>> 9542e9337552cfb01b1ba3fd3a0fe2f043440196

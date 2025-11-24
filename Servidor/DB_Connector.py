@@ -5,9 +5,9 @@ def connect_to_db():
     conn = None
     try:
         conn = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='',
+            host='192.168.2.51',
+            user='proj',
+            password='proj',
             database='restaurante'
         )
     except:

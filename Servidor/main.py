@@ -57,7 +57,7 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
         connection.sendall(resposta)
 
 
-def start_server(host: str = "127.0.0.1", port: int = 5000) -> None:
+def start_server(host: str = "0.0.0.0", port: int = 5000) -> None:
     # Inicializa o servidor TCP e escuta novas ligações em threads dedicadas
     bootstrap_defaults()
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

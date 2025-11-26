@@ -234,6 +234,8 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
                     new_role_id = data.get("cargo_id")
                     if target_id is None:
                         resposta = _build_response("erro", "ID do utilizador é obrigatório.")
+                    elif target_id == user_id:
+                        resposta = _build_response("erro", "Não pode editar o seu próprio perfil.")
                     else:
                         sucesso, mensagem = update_account(target_id, new_username, new_password, new_role_id)
                         status = "ok" if sucesso else "erro"
@@ -248,6 +250,8 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
                     target_id = data.get("user_id")
                     if target_id is None:
                         resposta = _build_response("erro", "ID do utilizador é obrigatório.")
+                    elif target_id == user_id:
+                        resposta = _build_response("erro", "Não pode eliminar a sua própria conta.")
                     else:
                         sucesso, mensagem = delete_account(target_id)
                         status = "ok" if sucesso else "erro"

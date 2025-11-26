@@ -92,10 +92,14 @@ def fluxo_comandos() -> None:
 
         if opcao == "1":
             response = enviar_pedido(Data(action="ver_perfil").to_dict())
-            print(response)
             perfil = response.get("data", {}).get("perfil", {})
-            print(f"Perfil do utilizador: {perfil}")
-        elif opcao == "2":
+            username = perfil.get("username", "Desconhecido")
+            cargo_nome = perfil.get("cargo_nome", "Desconhecido")
+            print(f"Perfil do utilizador:")
+            print(f"  Nome de utilizador: {username}")
+            print(f"  Cargo: {cargo_nome}")
+
+        elif opcao == "0":
             print("A terminar sessão...")
             break
         else:

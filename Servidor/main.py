@@ -79,12 +79,11 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
             elif acao == "registo":
                 resposta = _handle_register(payload)
             elif acao == "ver_perfil":
-                user_id = get_user_from_socket(connection)
-                if user_id is None:
+                perfil = get_user_from_socket(connection)
+                if perfil is None:
                     resposta = _build_response("erro", "Utilizador não autenticado.")
                 else:
                     # Aqui poderia ser implementada a lógica para obter o perfil do utilizador
-                    perfil = {"id": user_id, "info": "Detalhes do perfil fictício"}
                     resposta = _build_response("ok", "Perfil obtido com sucesso.", {"perfil": perfil})
             else:
                 resposta = _build_response("erro", "Acção desconhecida.")

@@ -42,29 +42,38 @@ def _handle_register(payload: dict) -> bytes:
 
 
 def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
-    # Recebe uma conexão individual, interpreta o pedido e envia uma resposta
-    with connection:
-        payload: dict = None
-        try:
+    # Trata múltiplos pedidos da mesma ligação de cliente
+    print(f"Cliente conectado: {address}")
+    
+    try:
+        while True:  # Loop para lidar com múltiplos pedidos
             raw_payload = connection.recv(4096)
-            if not raw_payload:
-                return
-            payload = json.loads(raw_payload.decode(ENCODING))
-        except (json.JSONDecodeError, UnicodeDecodeError):
-            connection.sendall(_build_response("erro", "Formato de mensagem inválido."))
-            return
-        
-        print(f"Ligação recebida de {address}: {payload}")
+            if not raw_payload:  # Ligação fechada pelo cliente
+                break
+            
+            try:
+                payload = json.loads(raw_payload.decode(ENCODING))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                connection.sendall(_build_response("erro", "Formato de mensagem inválido."))
+                continue
+            
+            print(f"Pedido recebido de {address}: {payload}")
+            acao = payload.get("action", "")
 
-        acao = payload.get("action", "")
-
-        if acao == "login":
-            resposta = _handle_login(payload)
-        elif acao == "registo":
-            resposta = _handle_register(payload)
-        else:
-            resposta = _build_response("erro", "Acção desconhecida.")
-        connection.sendall(resposta)
+            if acao == "login":
+                resposta = _handle_login(payload)
+            elif acao == "registo":
+                resposta = _handle_register(payload)
+            else:
+                resposta = _build_response("erro", "Acção desconhecida.")
+            
+            connection.sendall(resposta)
+    
+    except Exception as e:
+        print(f"Erro ao processar cliente {address}: {e}")
+    finally:
+        connection.close()
+        print(f"Cliente desconectado: {address}")
 
 
 def start_server(host: str = "0.0.0.0", port: int = 5000) -> None:
@@ -76,11 +85,16 @@ def start_server(host: str = "0.0.0.0", port: int = 5000) -> None:
     server_socket.listen()
     print(f"Servidor disponível em {host}:{port}")
 
-    while True:
-        client_conn, client_addr = server_socket.accept()
+    try:
         while True:
+            client_conn, client_addr = server_socket.accept()
+            # Uma thread por cliente, lida com múltiplos pedidos
             thread = threading.Thread(target=handle_client, args=(client_conn, client_addr), daemon=True)
             thread.start()
+    except KeyboardInterrupt:
+        print("\nServidor encerrado")
+    finally:
+        server_socket.close()
 
 if __name__ == "__main__":
     # Arranque directo quando o ficheiro é executado manualmente

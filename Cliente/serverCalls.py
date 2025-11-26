@@ -6,14 +6,61 @@ from jsonFormat import Data
 ENCODING = "utf-8"
 SERVIDOR = ("127.0.0.1", 5000)
 
+# Global persistent connection
+client_socket: socket.socket = None
+
+
+def _is_connected() -> bool:
+    """Verifica se a conexão ainda está ativa"""
+    try:
+        if client_socket is None:
+            return False
+        client_socket.send(b'')
+        return True
+    except:
+        return False
+
+
+def conectar_servidor() -> bool:
+    """Estabelece uma conexão persistente com o servidor"""
+    global client_socket
+    try:
+        if client_socket is None or not _is_connected():
+            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client_socket.connect(SERVIDOR)
+            print("✓ Conectado ao servidor")
+        return True
+    except Exception as e:
+        print(f"✗ Erro ao conectar: {e}")
+        client_socket = None
+        return False
+
+
+def desconectar_servidor() -> None:
+    """Fecha a conexão persistente com o servidor"""
+    global client_socket
+    if client_socket:
+        try:
+            client_socket.close()
+        except:
+            pass
+        client_socket = None
+        print("✓ Desconectado do servidor")
+
 
 def enviar_pedido(payload: dict) -> dict:
-    # Abre uma ligação temporária ao servidor para enviar pedidos em formato JSON
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
-        client_socket.connect(SERVIDOR)
+    # Reutiliza a ligação persistente para enviar pedidos em formato JSON
+    global client_socket
+    if not conectar_servidor():
+        raise ConnectionRefusedError("Não foi possível conectar ao servidor")
+    
+    try:
         client_socket.sendall(json.dumps(payload).encode(ENCODING))
         resposta = client_socket.recv(4096)
-    return json.loads(resposta.decode(ENCODING))
+        return json.loads(resposta.decode(ENCODING))
+    except Exception as e:
+        client_socket = None  # Reset on error
+        raise
 
 
 def recolher_credenciais() -> tuple[str, str]:

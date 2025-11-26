@@ -107,7 +107,22 @@ def fluxo_comandos() -> None:
             print(f"Perfil do utilizador:")
             print(f"  Nome de utilizador: {username}")
             print(f"  Cargo: {cargo_nome}")
-
+        elif opcao == "2":
+            print("Funcionalidade de ver cardápio ainda não implementada.")
+        elif opcao == "3":
+            print("Funcionalidade de fazer pedido ainda não implementada.")
+        elif opcao == "4":
+            print("Funcionalidade de ver histórico de pedidos ainda não implementada.")
+        elif opcao == "5":            
+            print("Funcionalidade de atualizar informações da conta ainda não implementada.")
+        elif opcao == "6":
+            print("Funcionalidade de gerir cardápio ainda não implementada.")
+        elif opcao == "7":
+            print("Funcionalidade de gerir utilizadores ainda não implementada.")
+        elif opcao == "8":
+            print("Funcionalidade de gerir cargos ainda não implementada.")
+        elif opcao == "9":
+            print("Funcionalidade de gerir stock ainda não implementada.")
         elif opcao == "0":
             print("A terminar sessão...")
             break

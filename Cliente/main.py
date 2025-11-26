@@ -30,7 +30,7 @@ def fluxo_login() -> None:
     resposta = enviar_pedido(data.to_dict())
     print(resposta.get("mensagem", "Sem resposta."))
     if resposta.get("status") == "ok":
-        dados = resposta.get("dados", {})
+        dados = resposta.get("data", {})
         utilizador = dados.get("utilizador", {})
         print(f"Bem-vindo, {utilizador.get('username')} ({utilizador.get('cargo_nome')}).")
 

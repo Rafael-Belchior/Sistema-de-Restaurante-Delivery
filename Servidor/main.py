@@ -18,8 +18,9 @@ def _build_response(status: str, message: str, data: Optional[dict] = None) -> b
 
 def _handle_login(payload: dict) -> bytes:
     # Processa um pedido de login validando as credenciais recebidas
-    username = payload.get("username", "").strip()
-    password = payload.get("password", "")
+    data: dict = payload.get("data", {})
+    username = data.get("username", "").strip()
+    password = data.get("password", "")
     utilizador = authenticate_account(username, password)
     if not utilizador:
         return _build_response("erro", "Credenciais inválidas.")

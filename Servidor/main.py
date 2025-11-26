@@ -29,8 +29,13 @@ def _handle_login(payload: dict) -> bytes:
 
 def _handle_register(payload: dict) -> bytes:
     # Trata os pedidos de criação de conta garantindo feedback claro ao cliente
-    username = payload.get("username", "").strip()
-    password = payload.get("password", "")
+    data: dict = payload.get("data", {})
+    username = data.get("username", "").strip()
+    password = data.get("password", "")
+
+    print(f"Pedido de registo recebido: username='{username}'")
+    print(f"Password recebida: '{password}'")
+
     sucesso, mensagem = create_account(username, password)
     status = "ok" if sucesso else "erro"
     return _build_response(status, mensagem)
@@ -48,10 +53,10 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
         except (json.JSONDecodeError, UnicodeDecodeError):
             connection.sendall(_build_response("erro", "Formato de mensagem inválido."))
             return
+        
+        print(f"Ligação recebida de {address}: {payload}")
 
-        acao = payload.get("action")
-
-        print(acao)
+        acao = payload.get("action", "")
 
         if acao == "login":
             resposta = _handle_login(payload)

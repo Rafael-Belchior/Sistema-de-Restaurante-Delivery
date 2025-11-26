@@ -1,6 +1,7 @@
 import json
 import socket
 from getpass import getpass
+from jsonFormat import Data
 
 ENCODING = "utf-8"
 SERVIDOR = ("127.0.0.1", 5000)
@@ -25,7 +26,8 @@ def recolher_credenciais() -> tuple[str, str]:
 def fluxo_login() -> None:
     # Executa o fluxo de login e apresenta o resultado ao utilizador
     username, password = recolher_credenciais()
-    resposta = enviar_pedido({"action": "login", "username": username, "password": password})
+    data = Data(action="login", data={"username": username, "password": password})
+    resposta = enviar_pedido(data.to_dict())
     print(resposta.get("mensagem", "Sem resposta."))
     if resposta.get("status") == "ok":
         dados = resposta.get("dados", {})
@@ -36,7 +38,8 @@ def fluxo_login() -> None:
 def fluxo_registo() -> None:
     # Pede os dados de registo e tenta criar uma nova conta remotamente
     username, password = recolher_credenciais()
-    resposta = enviar_pedido({"action": "registo", "username": username, "password": password})
+    data = Data(action="registo", data={"username": username, "password": password})
+    resposta = enviar_pedido(data.to_dict())
     print(resposta.get("mensagem", "Sem resposta."))
 
 

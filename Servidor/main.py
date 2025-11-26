@@ -78,9 +78,9 @@ def start_server(host: str = "0.0.0.0", port: int = 5000) -> None:
 
     while True:
         client_conn, client_addr = server_socket.accept()
-        thread = threading.Thread(target=handle_client, args=(client_conn, client_addr), daemon=True)
-        thread.start()
-
+        while True:
+            thread = threading.Thread(target=handle_client, args=(client_conn, client_addr), daemon=True)
+            thread.start()
 
 if __name__ == "__main__":
     # Arranque directo quando o ficheiro é executado manualmente

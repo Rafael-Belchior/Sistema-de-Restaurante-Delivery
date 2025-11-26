@@ -87,6 +87,14 @@ def fluxo_comandos() -> None:
     while True:
         print("\nEscolha uma opção:")
         print("1 - Ver perfil")
+        print("2 - Ver cardápio")
+        print("3 - Fazer pedido")
+        print("4 - Ver histórico de pedidos")
+        print("5 - Atualizar informações da conta")
+        print("6 - Gerir cardápio")
+        print("7 - Gerir utilizadores")
+        print("8 - Gerir cargos")
+        print()
         print("0 - Sair")
         opcao = input("Opção: ").strip()
 

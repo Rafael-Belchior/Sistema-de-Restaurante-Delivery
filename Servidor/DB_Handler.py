@@ -1,9 +1,9 @@
 from typing import Optional, Tuple
 
-from DB_Connector import connect_to_db
-from DB_Table_Creator import create_tables
-from DB_Table_Checker import connect_checker
-from DB_Table_Editor import connect_editor
+from DB_Connector import *
+from DB_Table_Creator import *
+from DB_Table_Checker import *
+from DB_Table_Editor import *
 
 # Estabelece a ligação à base de dados logo ao arrancar o módulo
 conn = connect_to_db()
@@ -70,53 +70,43 @@ def create_account(username: str, password: str, role: str = "Operador") -> Tupl
         return False, "Nome e palavra-passe são obrigatórios."
 
     cursor = conn.cursor()
-    cursor.execute("SELECT id FROM contas WHERE username = %s", (username,))
-    if cursor.fetchone():
+    if not check_username(username):
         cursor.close()
-        return False, "Já existe uma conta com esse nome."
-
+        return False, "Nome de utilizador já existe."
     role_id = _get_role_id(role)
     if role_id is None:
         cursor.close()
-        return False, "Cargo desconhecido."
-
-    cursor.execute(
-        "INSERT INTO contas (username, password, cargo_id) VALUES (%s, %s, %s)",
-        (username, password, role_id),
-    )
-    conn.commit()
+        return False, "Cargo inválido."
+    insert_account(username, password)
+    edit_account_role(username, role_id)
     cursor.close()
     return True, "Conta criada com sucesso."
 
 def get_account_by_id(user_id: int) -> Optional[dict]:
     # Recolhe os dados essenciais de uma conta a partir do seu ID
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT username, cargo_id FROM contas WHERE id = %s",
-        (user_id,),
-    )
-    result = cursor.fetchone()
-    cursor.close()
+    result = get_user(user_id)
     print(f"get_account_by_id({user_id}) result: {result}")
     if not result:
         return None
 
-    username, role_id = result
+    _, username, role_id = result
     role_name = _get_role_name(role_id) or "Desconhecido"
     return {"id": user_id, "username": username, "cargo_id": role_id, "cargo_nome": role_name}
 
 def authenticate_account(username: str, password: str) -> Optional[dict]:
-    # Valida as credenciais e devolve um dicionário com os dados essenciais
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT id, cargo_id FROM contas WHERE username = %s AND password = %s",
-        (username, password),
-    )
-    result = cursor.fetchone()
-    cursor.close()
+    result = check_auth(username, password)
     if not result:
         return None
 
     user_id, role_id = result
     role_name = _get_role_name(role_id) or "Desconhecido"
     return {"id": user_id, "username": username, "cargo_id": role_id, "cargo_nome": role_name}
+
+
+def is_admin(user_id: int) -> bool:
+    cargo_id = check_permission(user_id)
+    return cargo_id == 1  # Assume que o ID 1 é sempre o Administrador
+
+def delete_role(role: int | str) -> None:
+    # Elimina um cargo específico da base de dados
+    del_role(role)

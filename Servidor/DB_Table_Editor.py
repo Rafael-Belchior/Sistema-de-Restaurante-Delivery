@@ -69,3 +69,14 @@ def del_account(account: int | str):
     cursor.execute("DELETE FROM contas WHERE id = %s", (account,))
     __conn.commit()
     cursor.close()
+
+def del_role(role: int | str):
+    # Elimina um cargo pelo id ou nome
+    cursor = __conn.cursor()
+    if (type(role) == str):
+        cursor.execute("SELECT id FROM cargos WHERE nome = %s", (role,))
+        role_tuple = cursor.fetchone()
+        role = role_tuple[0] if role_tuple else None
+    cursor.execute("DELETE FROM cargos WHERE id = %s", (role,))
+    __conn.commit()
+    cursor.close()

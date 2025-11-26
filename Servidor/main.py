@@ -85,6 +85,24 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
                 else:
                     # Aqui poderia ser implementada a lógica para obter o perfil do utilizador
                     resposta = _build_response("ok", "Perfil obtido com sucesso.", {"perfil": perfil})
+
+            elif acao == "get_cargos":
+                cargos = get_all_roles()
+                resposta = _build_response("ok", "Cargos obtidos com sucesso.", cargos)
+
+            elif acao == "del_cargo":
+                user_id = clients.get(connection)
+                if (user_id is not None or user_id != -1) and is_admin(user_id):
+                    data: dict = payload.get("data", {})
+                    cargo_id = data.get("cargo_id")
+                    if cargo_id is None:
+                        resposta = _build_response("erro", "ID do cargo não fornecido.")
+                    else:
+                        sucesso, mensagem = delete_role(cargo_id)
+                        status = "ok" if sucesso else "erro"
+                        resposta = _build_response(status, mensagem)
+                else:
+                    resposta = _build_response("erro", "Permissão negada.")
             else:
                 resposta = _build_response("erro", "Acção desconhecida.")
             

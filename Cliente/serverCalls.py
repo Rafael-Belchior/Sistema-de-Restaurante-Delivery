@@ -91,43 +91,301 @@ def fluxo_comandos() -> None:
         print("3 - Fazer pedido")
         print("4 - Ver histórico de pedidos")
         print("5 - Atualizar informações da conta")
-        print("6 - Gerir cardápio")
-        print("7 - Gerir utilizadores")
-        print("8 - Gerir cargos")
-        print("9 - Gerir stock")
+        print("6 - Gerir cardápio (Admin)")
+        print("7 - Gerir utilizadores (Admin)")
+        print("8 - Gerir cargos (Admin)")
+        print("9 - Gerir stock (Admin)")
         print()
         print("0 - Sair")
         opcao = input("Opção: ").strip()
 
         if opcao == "1":
-            response = enviar_pedido(Data(action="ver_perfil").to_dict())
-            perfil = response.get("data", {}).get("perfil", {})
-            username = perfil.get("username", "Desconhecido")
-            cargo_nome = perfil.get("cargo_nome", "Desconhecido")
-            print(f"Perfil do utilizador:")
-            print(f"  Nome de utilizador: {username}")
-            print(f"  Cargo: {cargo_nome}")
+            fluxo_ver_perfil()
         elif opcao == "2":
-            print("Funcionalidade de ver cardápio ainda não implementada.")
+            fluxo_ver_cardapio()
         elif opcao == "3":
-            print("Funcionalidade de fazer pedido ainda não implementada.")
+            fluxo_fazer_pedido()
         elif opcao == "4":
-            print("Funcionalidade de ver histórico de pedidos ainda não implementada.")
-        elif opcao == "5":            
-            print("Funcionalidade de atualizar informações da conta ainda não implementada.")
+            fluxo_ver_historico()
+        elif opcao == "5":
+            fluxo_atualizar_conta()
         elif opcao == "6":
-            print("Funcionalidade de gerir cardápio ainda não implementada.")
+            fluxo_gerir_cardapio()
         elif opcao == "7":
-            print("Funcionalidade de gerir utilizadores ainda não implementada.")
+            fluxo_gerir_utilizadores()
         elif opcao == "8":
-            print("Funcionalidade de gerir cargos ainda não implementada.")
+            fluxo_gerir_cargos()
         elif opcao == "9":
-            print("Funcionalidade de gerir stock ainda não implementada.")
+            fluxo_gerir_stock()
         elif opcao == "0":
             print("A terminar sessão...")
             break
         else:
             print("Opção inválida. Tente novamente.")
+
+
+def fluxo_ver_perfil() -> None:
+    """Mostra o perfil do utilizador autenticado."""
+    response = enviar_pedido(Data(action="ver_perfil").to_dict())
+    if response.get("status") == "ok":
+        perfil = response.get("data", {}).get("perfil", {})
+        print(f"\nPerfil do utilizador:")
+        print(f"  ID: {perfil.get('id', 'N/A')}")
+        print(f"  Nome de utilizador: {perfil.get('username', 'Desconhecido')}")
+        print(f"  Cargo: {perfil.get('cargo_nome', 'Desconhecido')}")
+    else:
+        print(response.get("mensagem", "Erro ao obter perfil."))
+
+
+def fluxo_ver_cardapio() -> None:
+    """Mostra o cardápio disponível."""
+    response = enviar_pedido(Data(action="ver_cardapio").to_dict())
+    if response.get("status") == "ok":
+        cardapio = response.get("data", {}).get("cardapio", [])
+        if not cardapio:
+            print("\nO cardápio está vazio.")
+            return
+        print("\n--- CARDÁPIO ---")
+        for item in cardapio:
+            disponivel = "✓" if item.get("stock", 0) > 0 else "✗ (Esgotado)"
+            print(f"  [{item.get('id')}] {item.get('nome')} - €{item.get('preco', 0):.2f} {disponivel}")
+    else:
+        print(response.get("mensagem", "Erro ao obter cardápio."))
+
+
+def fluxo_fazer_pedido() -> None:
+    """Permite ao utilizador fazer um pedido."""
+    # Primeiro mostrar o cardápio
+    response = enviar_pedido(Data(action="ver_cardapio").to_dict())
+    if response.get("status") != "ok":
+        print(response.get("mensagem", "Erro ao obter cardápio."))
+        return
+    
+    cardapio = response.get("data", {}).get("cardapio", [])
+    if not cardapio:
+        print("\nO cardápio está vazio. Não é possível fazer pedidos.")
+        return
+    
+    print("\n--- CARDÁPIO ---")
+    for item in cardapio:
+        disponivel = f"(Stock: {item.get('stock', 0)})" if item.get("stock", 0) > 0 else "(Esgotado)"
+        print(f"  [{item.get('id')}] {item.get('nome')} - €{item.get('preco', 0):.2f} {disponivel}")
+    
+    itens_pedido = []
+    while True:
+        item_id = input("\nID do item (ou 'fim' para concluir): ").strip()
+        if item_id.lower() == 'fim':
+            break
+        try:
+            item_id = int(item_id)
+            quantidade = input("Quantidade: ").strip()
+            quantidade = int(quantidade) if quantidade else 1
+            itens_pedido.append({"comida_id": item_id, "quantidade": quantidade})
+            print(f"  ✓ Adicionado ao pedido.")
+        except ValueError:
+            print("  ✗ Entrada inválida.")
+    
+    if not itens_pedido:
+        print("Pedido cancelado - nenhum item selecionado.")
+        return
+    
+    response = enviar_pedido(Data(action="fazer_pedido", data={"itens": itens_pedido}).to_dict())
+    print(response.get("mensagem", "Erro ao fazer pedido."))
+
+
+def fluxo_ver_historico() -> None:
+    """Mostra o histórico de pedidos do utilizador."""
+    response = enviar_pedido(Data(action="ver_historico").to_dict())
+    if response.get("status") == "ok":
+        historico = response.get("data", {}).get("historico", [])
+        if not historico:
+            print("\nNão tem pedidos no histórico.")
+            return
+        print("\n--- HISTÓRICO DE PEDIDOS ---")
+        for pedido in historico:
+            print(f"  Fatura #{pedido.get('fatura_id')} - {pedido.get('data')}")
+            print(f"    {pedido.get('item')} x{pedido.get('quantidade')} = €{pedido.get('total', 0):.2f}")
+    else:
+        print(response.get("mensagem", "Erro ao obter histórico."))
+
+
+def fluxo_atualizar_conta() -> None:
+    """Permite ao utilizador atualizar a sua palavra-passe."""
+    print("\n--- ATUALIZAR CONTA ---")
+    nova_password = getpass("Nova palavra-passe: ")
+    if not nova_password:
+        print("Operação cancelada.")
+        return
+    
+    response = enviar_pedido(Data(action="atualizar_conta", data={"password": nova_password}).to_dict())
+    print(response.get("mensagem", "Erro ao atualizar conta."))
+
+
+def fluxo_gerir_cardapio() -> None:
+    """Menu de gestão do cardápio (apenas admin)."""
+    while True:
+        print("\n--- GERIR CARDÁPIO ---")
+        print("1 - Ver cardápio")
+        print("2 - Adicionar item")
+        print("3 - Editar preço")
+        print("4 - Remover item")
+        print("0 - Voltar")
+        opcao = input("Opção: ").strip()
+        
+        if opcao == "1":
+            fluxo_ver_cardapio()
+        elif opcao == "2":
+            nome = input("Nome do item: ").strip()
+            preco = input("Preço: ").strip()
+            stock = input("Stock inicial (default 0): ").strip()
+            try:
+                preco = float(preco)
+                stock = int(stock) if stock else 0
+                response = enviar_pedido(Data(action="add_cardapio", data={"nome": nome, "preco": preco, "stock": stock}).to_dict())
+                print(response.get("mensagem"))
+            except ValueError:
+                print("Valores inválidos.")
+        elif opcao == "3":
+            item_id = input("ID do item: ").strip()
+            novo_preco = input("Novo preço: ").strip()
+            try:
+                response = enviar_pedido(Data(action="edit_cardapio", data={"item_id": int(item_id), "preco": float(novo_preco)}).to_dict())
+                print(response.get("mensagem"))
+            except ValueError:
+                print("Valores inválidos.")
+        elif opcao == "4":
+            item_id = input("ID do item a remover: ").strip()
+            try:
+                response = enviar_pedido(Data(action="del_cardapio", data={"item_id": int(item_id)}).to_dict())
+                print(response.get("mensagem"))
+            except ValueError:
+                print("ID inválido.")
+        elif opcao == "0":
+            break
+        else:
+            print("Opção inválida.")
+
+
+def fluxo_gerir_utilizadores() -> None:
+    """Menu de gestão de utilizadores (apenas admin)."""
+    while True:
+        print("\n--- GERIR UTILIZADORES ---")
+        print("1 - Ver utilizadores")
+        print("2 - Editar utilizador")
+        print("3 - Eliminar utilizador")
+        print("0 - Voltar")
+        opcao = input("Opção: ").strip()
+        
+        if opcao == "1":
+            response = enviar_pedido(Data(action="ver_utilizadores").to_dict())
+            if response.get("status") == "ok":
+                utilizadores = response.get("data", {}).get("utilizadores", [])
+                print("\n--- UTILIZADORES ---")
+                for u in utilizadores:
+                    print(f"  [{u.get('id')}] {u.get('username')} - {u.get('cargo_nome')}")
+            else:
+                print(response.get("mensagem"))
+        elif opcao == "2":
+            user_id = input("ID do utilizador: ").strip()
+            print("Deixe em branco para não alterar.")
+            new_username = input("Novo username: ").strip() or None
+            new_password = input("Nova password: ").strip() or None
+            new_cargo = input("Novo cargo_id: ").strip()
+            new_cargo = int(new_cargo) if new_cargo else None
+            try:
+                data = {"user_id": int(user_id)}
+                if new_username:
+                    data["username"] = new_username
+                if new_password:
+                    data["password"] = new_password
+                if new_cargo:
+                    data["cargo_id"] = new_cargo
+                response = enviar_pedido(Data(action="edit_utilizador", data=data).to_dict())
+                print(response.get("mensagem"))
+            except ValueError:
+                print("ID inválido.")
+        elif opcao == "3":
+            user_id = input("ID do utilizador a eliminar: ").strip()
+            try:
+                response = enviar_pedido(Data(action="del_utilizador", data={"user_id": int(user_id)}).to_dict())
+                print(response.get("mensagem"))
+            except ValueError:
+                print("ID inválido.")
+        elif opcao == "0":
+            break
+        else:
+            print("Opção inválida.")
+
+
+def fluxo_gerir_cargos() -> None:
+    """Menu de gestão de cargos (apenas admin)."""
+    while True:
+        print("\n--- GERIR CARGOS ---")
+        print("1 - Ver cargos")
+        print("2 - Adicionar cargo")
+        print("3 - Eliminar cargo")
+        print("0 - Voltar")
+        opcao = input("Opção: ").strip()
+        
+        if opcao == "1":
+            response = enviar_pedido(Data(action="get_cargos").to_dict())
+            if response.get("status") == "ok":
+                cargos = response.get("data", [])
+                print("\n--- CARGOS ---")
+                for c in cargos:
+                    print(f"  [{c.get('id')}] {c.get('nome')}")
+            else:
+                print(response.get("mensagem"))
+        elif opcao == "2":
+            nome = input("Nome do novo cargo: ").strip()
+            if nome:
+                response = enviar_pedido(Data(action="add_cargo", data={"nome": nome}).to_dict())
+                print(response.get("mensagem"))
+            else:
+                print("Nome é obrigatório.")
+        elif opcao == "3":
+            cargo_id = input("ID do cargo a eliminar: ").strip()
+            try:
+                response = enviar_pedido(Data(action="del_cargo", data={"cargo_id": int(cargo_id)}).to_dict())
+                print(response.get("mensagem"))
+            except ValueError:
+                print("ID inválido.")
+        elif opcao == "0":
+            break
+        else:
+            print("Opção inválida.")
+
+
+def fluxo_gerir_stock() -> None:
+    """Menu de gestão de stock (apenas admin)."""
+    while True:
+        print("\n--- GERIR STOCK ---")
+        print("1 - Ver stock")
+        print("2 - Atualizar quantidade")
+        print("0 - Voltar")
+        opcao = input("Opção: ").strip()
+        
+        if opcao == "1":
+            response = enviar_pedido(Data(action="ver_stock").to_dict())
+            if response.get("status") == "ok":
+                stock = response.get("data", {}).get("stock", [])
+                print("\n--- STOCK ---")
+                for item in stock:
+                    print(f"  [{item.get('id')}] {item.get('nome')} - Quantidade: {item.get('quantidade')}")
+            else:
+                print(response.get("mensagem"))
+        elif opcao == "2":
+            item_id = input("ID do item: ").strip()
+            quantidade = input("Nova quantidade: ").strip()
+            try:
+                response = enviar_pedido(Data(action="edit_stock", data={"item_id": int(item_id), "quantidade": int(quantidade)}).to_dict())
+                print(response.get("mensagem"))
+            except ValueError:
+                print("Valores inválidos.")
+        elif opcao == "0":
+            break
+        else:
+            print("Opção inválida.")
 
 def fluxo_registo() -> None:
     # Pede os dados de registo e tenta criar uma nova conta remotamente

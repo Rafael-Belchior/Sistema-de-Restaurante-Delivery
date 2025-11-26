@@ -92,7 +92,7 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
 
             elif acao == "del_cargo":
                 user_id = clients.get(connection)
-                if (user_id is not None or user_id != -1) and is_admin(user_id):
+                if (user_id is not None and user_id != -1) and is_admin(user_id):
                     data: dict = payload.get("data", {})
                     cargo_id = data.get("cargo_id")
                     if cargo_id is None:
@@ -103,6 +103,169 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
                         resposta = _build_response(status, mensagem)
                 else:
                     resposta = _build_response("erro", "Permissão negada.")
+            
+            elif acao == "add_cargo":
+                user_id = clients.get(connection)
+                if (user_id is not None and user_id != -1) and is_admin(user_id):
+                    data: dict = payload.get("data", {})
+                    nome = data.get("nome", "").strip()
+                    if not nome:
+                        resposta = _build_response("erro", "Nome do cargo é obrigatório.")
+                    else:
+                        sucesso, mensagem = create_role(nome)
+                        status = "ok" if sucesso else "erro"
+                        resposta = _build_response(status, mensagem)
+                else:
+                    resposta = _build_response("erro", "Permissão negada.")
+            
+            # Cardápio
+            elif acao == "ver_cardapio":
+                cardapio = get_cardapio()
+                resposta = _build_response("ok", "Cardápio obtido com sucesso.", {"cardapio": cardapio})
+            
+            elif acao == "add_cardapio":
+                user_id = clients.get(connection)
+                if (user_id is not None and user_id != -1) and is_admin(user_id):
+                    data: dict = payload.get("data", {})
+                    nome = data.get("nome", "").strip()
+                    preco = data.get("preco")
+                    stock = data.get("stock", 0)
+                    if not nome or preco is None:
+                        resposta = _build_response("erro", "Nome e preço são obrigatórios.")
+                    else:
+                        sucesso, mensagem = add_cardapio_item(nome, preco, stock)
+                        status = "ok" if sucesso else "erro"
+                        resposta = _build_response(status, mensagem)
+                else:
+                    resposta = _build_response("erro", "Permissão negada.")
+            
+            elif acao == "edit_cardapio":
+                user_id = clients.get(connection)
+                if (user_id is not None and user_id != -1) and is_admin(user_id):
+                    data: dict = payload.get("data", {})
+                    item_id = data.get("item_id")
+                    novo_preco = data.get("preco")
+                    if item_id is None:
+                        resposta = _build_response("erro", "ID do item é obrigatório.")
+                    else:
+                        sucesso, mensagem = update_cardapio_item(item_id, novo_preco)
+                        status = "ok" if sucesso else "erro"
+                        resposta = _build_response(status, mensagem)
+                else:
+                    resposta = _build_response("erro", "Permissão negada.")
+            
+            elif acao == "del_cardapio":
+                user_id = clients.get(connection)
+                if (user_id is not None and user_id != -1) and is_admin(user_id):
+                    data: dict = payload.get("data", {})
+                    item_id = data.get("item_id")
+                    if item_id is None:
+                        resposta = _build_response("erro", "ID do item é obrigatório.")
+                    else:
+                        sucesso, mensagem = delete_cardapio_item(item_id)
+                        status = "ok" if sucesso else "erro"
+                        resposta = _build_response(status, mensagem)
+                else:
+                    resposta = _build_response("erro", "Permissão negada.")
+            
+            # Pedidos
+            elif acao == "fazer_pedido":
+                user_id = clients.get(connection)
+                if user_id is None or user_id == -1:
+                    resposta = _build_response("erro", "Utilizador não autenticado.")
+                else:
+                    data: dict = payload.get("data", {})
+                    itens = data.get("itens", [])
+                    if not itens:
+                        resposta = _build_response("erro", "Nenhum item no pedido.")
+                    else:
+                        sucesso, mensagem = criar_pedido(user_id, itens)
+                        status = "ok" if sucesso else "erro"
+                        resposta = _build_response(status, mensagem)
+            
+            elif acao == "ver_historico":
+                user_id = clients.get(connection)
+                if user_id is None or user_id == -1:
+                    resposta = _build_response("erro", "Utilizador não autenticado.")
+                else:
+                    historico = get_historico_pedidos(user_id)
+                    resposta = _build_response("ok", "Histórico obtido com sucesso.", {"historico": historico})
+            
+            # Stock
+            elif acao == "ver_stock":
+                user_id = clients.get(connection)
+                if (user_id is not None and user_id != -1) and is_admin(user_id):
+                    stock = get_stock()
+                    resposta = _build_response("ok", "Stock obtido com sucesso.", {"stock": stock})
+                else:
+                    resposta = _build_response("erro", "Permissão negada.")
+            
+            elif acao == "edit_stock":
+                user_id = clients.get(connection)
+                if (user_id is not None and user_id != -1) and is_admin(user_id):
+                    data: dict = payload.get("data", {})
+                    item_id = data.get("item_id")
+                    quantidade = data.get("quantidade")
+                    if item_id is None or quantidade is None:
+                        resposta = _build_response("erro", "ID do item e quantidade são obrigatórios.")
+                    else:
+                        sucesso, mensagem = update_stock(item_id, quantidade)
+                        status = "ok" if sucesso else "erro"
+                        resposta = _build_response(status, mensagem)
+                else:
+                    resposta = _build_response("erro", "Permissão negada.")
+            
+            # Utilizadores
+            elif acao == "ver_utilizadores":
+                user_id = clients.get(connection)
+                if (user_id is not None and user_id != -1) and is_admin(user_id):
+                    utilizadores = get_all_accounts()
+                    resposta = _build_response("ok", "Utilizadores obtidos com sucesso.", {"utilizadores": utilizadores})
+                else:
+                    resposta = _build_response("erro", "Permissão negada.")
+            
+            elif acao == "edit_utilizador":
+                user_id = clients.get(connection)
+                if (user_id is not None and user_id != -1) and is_admin(user_id):
+                    data: dict = payload.get("data", {})
+                    target_id = data.get("user_id")
+                    new_username = data.get("username")
+                    new_password = data.get("password")
+                    new_role_id = data.get("cargo_id")
+                    if target_id is None:
+                        resposta = _build_response("erro", "ID do utilizador é obrigatório.")
+                    else:
+                        sucesso, mensagem = update_account(target_id, new_username, new_password, new_role_id)
+                        status = "ok" if sucesso else "erro"
+                        resposta = _build_response(status, mensagem)
+                else:
+                    resposta = _build_response("erro", "Permissão negada.")
+            
+            elif acao == "del_utilizador":
+                user_id = clients.get(connection)
+                if (user_id is not None and user_id != -1) and is_admin(user_id):
+                    data: dict = payload.get("data", {})
+                    target_id = data.get("user_id")
+                    if target_id is None:
+                        resposta = _build_response("erro", "ID do utilizador é obrigatório.")
+                    else:
+                        sucesso, mensagem = delete_account(target_id)
+                        status = "ok" if sucesso else "erro"
+                        resposta = _build_response(status, mensagem)
+                else:
+                    resposta = _build_response("erro", "Permissão negada.")
+            
+            elif acao == "atualizar_conta":
+                user_id = clients.get(connection)
+                if user_id is None or user_id == -1:
+                    resposta = _build_response("erro", "Utilizador não autenticado.")
+                else:
+                    data: dict = payload.get("data", {})
+                    new_password = data.get("password")
+                    sucesso, mensagem = update_account(user_id, new_password=new_password)
+                    status = "ok" if sucesso else "erro"
+                    resposta = _build_response(status, mensagem)
+            
             else:
                 resposta = _build_response("erro", "Acção desconhecida.")
             

@@ -7,6 +7,7 @@ from DB_Handler import authenticate_account, bootstrap_defaults, create_account
 
 ENCODING = "utf-8"
 
+clients: dict[socket.socket, int] = {}
 
 def _build_response(status: str, message: str, data: Optional[dict] = None) -> bytes:
     # Constrói a resposta padronizada para o cliente com mensagens em português
@@ -16,7 +17,7 @@ def _build_response(status: str, message: str, data: Optional[dict] = None) -> b
     return json.dumps(envelope).encode(ENCODING)
 
 
-def _handle_login(payload: dict) -> bytes:
+def _handle_login(payload: dict, client_socket: socket.socket) -> bytes:
     # Processa um pedido de login validando as credenciais recebidas
     data: dict = payload.get("data", {})
     username = data.get("username", "").strip()
@@ -24,6 +25,11 @@ def _handle_login(payload: dict) -> bytes:
     utilizador = authenticate_account(username, password)
     if not utilizador:
         return _build_response("erro", "Credenciais inválidas.")
+    
+    # Regista o utilizador como autenticado na ligação actual usando o id do user
+    global clients
+    clients[client_socket] = utilizador["id"]
+
     return _build_response("ok", "Login efectuado com sucesso.", {"utilizador": utilizador})
 
 
@@ -44,15 +50,20 @@ def _handle_register(payload: dict) -> bytes:
 def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
     # Trata múltiplos pedidos da mesma ligação de cliente
     print(f"Cliente conectado: {address}")
+    global clients
     
     try:
         while True:  # Loop para lidar com múltiplos pedidos
             raw_payload = connection.recv(4096)
             if not raw_payload:  # Ligação fechada pelo cliente
+                clients.pop(connection)
                 break
             
+
+            clients.update({connection: -1})
+
             try:
-                payload = json.loads(raw_payload.decode(ENCODING))
+                payload: dict = json.loads(raw_payload.decode(ENCODING))
             except (json.JSONDecodeError, UnicodeDecodeError):
                 connection.sendall(_build_response("erro", "Formato de mensagem inválido."))
                 continue
@@ -61,7 +72,7 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
             acao = payload.get("action", "")
 
             if acao == "login":
-                resposta = _handle_login(payload)
+                resposta = _handle_login(payload, connection)
             elif acao == "registo":
                 resposta = _handle_register(payload)
             else:

@@ -87,7 +87,7 @@ def fluxo_comandos() -> None:
     while True:
         print("\nEscolha uma opção:")
         print("1 - Ver perfil")
-        print("2 - Sair")
+        print("0 - Sair")
         opcao = input("Opção: ").strip()
 
         if opcao == "1":

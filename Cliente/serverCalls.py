@@ -80,7 +80,26 @@ def fluxo_login() -> None:
         dados = resposta.get("data", {})
         utilizador = dados.get("utilizador", {})
         print(f"Bem-vindo, {utilizador.get('username')} ({utilizador.get('cargo_nome')}).")
+        fluxo_comandos()
 
+def fluxo_comandos() -> None:
+    # Executa um fluxo simples de comandos após o login
+    while True:
+        print("\nEscolha uma opção:")
+        print("1 - Ver perfil")
+        print("2 - Sair")
+        opcao = input("Opção: ").strip()
+
+        if opcao == "1":
+            response = enviar_pedido(Data(action="ver_perfil").to_dict())
+            print(response)
+            perfil = response.get("data", {}).get("perfil", {})
+            print(f"Perfil do utilizador: {perfil}")
+        elif opcao == "2":
+            print("A terminar sessão...")
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
 
 def fluxo_registo() -> None:
     # Pede os dados de registo e tenta criar uma nova conta remotamente

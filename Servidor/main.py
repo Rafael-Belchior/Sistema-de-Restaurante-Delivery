@@ -3,7 +3,7 @@ import socket
 import threading
 from typing import Optional, Tuple
 
-from DB_Handler import authenticate_account, bootstrap_defaults, create_account
+from DB_Handler import *
 
 ENCODING = "utf-8"
 
@@ -46,6 +46,11 @@ def _handle_register(payload: dict) -> bytes:
     status = "ok" if sucesso else "erro"
     return _build_response(status, mensagem)
 
+def get_user_from_socket(client_socket: socket.socket) -> Optional[dict]:
+    global clients
+    userID = clients.get(client_socket)
+    return get_account_by_id(userID)
+
 
 def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
     # Trata múltiplos pedidos da mesma ligação de cliente
@@ -53,14 +58,12 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
     global clients
     
     try:
+        clients.update({connection: -1})
         while True:  # Loop para lidar com múltiplos pedidos
             raw_payload = connection.recv(4096)
             if not raw_payload:  # Ligação fechada pelo cliente
                 clients.pop(connection)
                 break
-            
-
-            clients.update({connection: -1})
 
             try:
                 payload: dict = json.loads(raw_payload.decode(ENCODING))
@@ -75,6 +78,14 @@ def handle_client(connection: socket.socket, address: Tuple[str, int]) -> None:
                 resposta = _handle_login(payload, connection)
             elif acao == "registo":
                 resposta = _handle_register(payload)
+            elif acao == "ver_perfil":
+                user_id = get_user_from_socket(connection)
+                if user_id is None:
+                    resposta = _build_response("erro", "Utilizador não autenticado.")
+                else:
+                    # Aqui poderia ser implementada a lógica para obter o perfil do utilizador
+                    perfil = {"id": user_id, "info": "Detalhes do perfil fictício"}
+                    resposta = _build_response("ok", "Perfil obtido com sucesso.", {"perfil": perfil})
             else:
                 resposta = _build_response("erro", "Acção desconhecida.")
             

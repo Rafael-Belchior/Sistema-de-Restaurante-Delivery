@@ -88,6 +88,22 @@ def create_account(username: str, password: str, role: str = "Operador") -> Tupl
     cursor.close()
     return True, "Conta criada com sucesso."
 
+def get_account_by_id(user_id: int) -> Optional[dict]:
+    # Recolhe os dados essenciais de uma conta a partir do seu ID
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT username, cargo_id FROM contas WHERE id = %s",
+        (user_id,),
+    )
+    result = cursor.fetchone()
+    cursor.close()
+    print(f"get_account_by_id({user_id}) result: {result}")
+    if not result:
+        return None
+
+    username, role_id = result
+    role_name = _get_role_name(role_id) or "Desconhecido"
+    return {"id": user_id, "username": username, "cargo_id": role_id, "cargo_nome": role_name}
 
 def authenticate_account(username: str, password: str) -> Optional[dict]:
     # Valida as credenciais e devolve um dicionário com os dados essenciais
